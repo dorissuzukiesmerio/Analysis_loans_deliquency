@@ -26,17 +26,30 @@ summary(loans$DisbursementDate)
 #just checking, but not too relevant to know its statistics:
 summary(factor(loans$LoanID))
 summary(loans$CustomerId)
+
+# Obs: I could have done in one code : summary(loans), but then would need to first create new variables for the categorical ones
 #Check: unique LoanID and unique Customer ? No. See distribution of loans per customer
 #See histogram
 hist(loans$CustomerId, 65421, main="CustomerID", xlab="CustomerID", ylab="Number of loans per customer")
 #Count how many customers have a certain number of loans
 # insight: create variable to how many loans each customer has had and include that in analysis
 # However: be careful since the  individual FE may capture that ? check
+#install.packages("plyr") # if not installed previously
+library(plyr)
+count(loans, c("loans$CustomerID", "loans$LoanID"))
 # Maybe: some info about difference of date between disbursements ? (create variable)
 
 #Panel Data
 
-#inspect missing data
+#inspect missing data:
+summary(loans)
+#method 1: omit missing values
+loans_clean <- na.omit(loans)
+summary(loans_clean)
+# 
+65421-65379
+#There were 42 missing values, ommited now
+
 
 #inspect distribution of the variables
 # histogram
@@ -98,6 +111,7 @@ summary(lm1)
 # logit and probit models
 
 #Machine learning methods
+library(caret)
 
 # Try: random forest
 #feature of importance
