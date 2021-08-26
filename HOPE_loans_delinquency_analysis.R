@@ -24,8 +24,16 @@ summary(factor(loans$ProductGroup1Name))
 summary(loans$BirthDate)
 summary(loans$DisbursementDate)
 #just checking, but not too relevant to know its statistics:
-summary(loans$LoanID)
+summary(factor(loans$LoanID))
 summary(loans$CustomerId)
+#Check: unique LoanID and unique Customer ? No. See distribution of loans per customer
+#See histogram
+hist(loans$CustomerId, 65421, main="CustomerID", xlab="CustomerID", ylab="Number of loans per customer")
+#Count how many customers have a certain number of loans
+# insight: create variable to how many loans each customer has had and include that in analysis
+# However: be careful since the  individual FE may capture that ? check
+# Maybe: some info about difference of date between disbursements ? (create variable)
+
 #Panel Data
 
 #inspect missing data
@@ -59,7 +67,17 @@ Delinquency <- factor(loans$LateInstallments)
 levels(Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
 summary(factor(Delinquency))
 
-# Make date variable : day, month, year
+#Useful to logit/probit models?
+is_low <- factor(loans$LateInstallments)
+levels(is_low) <- list(Low = 0:2, not_low = 3:18 )
+summary(factor(is_low))
+
+is_high <- factor(loans$LateInstallments)
+levels(is_high) <- list(not_high = 0:4, high = 4:18 )
+summary(factor(is_high))
+
+
+# Make date variable : day, month, year #inspect how it plots
 
 #Age groups:
 
@@ -77,8 +95,13 @@ summary(lm1)
 
 # simple regression with time and individual FE 
 
+# logit and probit models
+
 #Machine learning methods
+
+# Try: random forest
 #feature of importance
-#
+#ConfusionMatrix
+#CorrelationMatrix
 
 #PS: putting into colab might be nicer for visualizing 
