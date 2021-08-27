@@ -157,18 +157,17 @@ Male_percentage
 #Deliquency rates per DisbursedAmount:
 
 
-
-
+## REGRESSIONS: 
 # simple OLS: with Late Installments
 # simple regression with time and individual FE 
 lm1 <- lm(loans$LateInstallments ~ factor(loans$Gender) + factor(loans$MaritalStatus) + loans$DisbursedAmount + factor(loans$ProductGroup1Name) + factor(loans$CustomerId) + loans$WorkDaysLoanWasInArrears)
 summary(lm1)
 
+# tobit : for late installments
+# adequate because of truncated data (lots of zeros)
+# interpretation - signal, but for magnitude, calculate the marginal effect
 
-# tobit and ologit models:
-
-# tobit : interpretation - signal, but for magnitude, calculate the marginal effect
-
+# ologit: for categorical variable (Deliquency rates: none, low, medium, high)
 
 #Machine learning methods
 library(caret)
