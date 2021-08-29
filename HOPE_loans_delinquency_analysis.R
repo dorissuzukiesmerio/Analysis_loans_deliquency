@@ -64,6 +64,7 @@ hist(loans$WorkDaysLoanWasInArrears, main="WorkDaysLoanWasInArrears", xlab="Work
 
 #inspect outliers for each variable:
 #Boxplot
+
 library(ggplot2)
 ggplot(loans,aes(x=ProductGroup1Name,y=LateInstallments,
                fill=factor(ProductGroup1Name)))+
@@ -73,6 +74,10 @@ ggplot(loans,aes(x=ProductGroup1Name,y=LateInstallments,
   theme_bw()+coord_flip()+
   theme(legend.position = "none")
 
+ggplot(data = loans,
+       aes(x = LateInstallments, y = MaritalStatus)) +
+  geom_boxplot()
+
 library(ggplot2)
 ggplot(loans,aes(x=MaritalStatus,y=LateInstallments,
                  fill=factor(MaritalStatus)))+
@@ -81,6 +86,10 @@ ggplot(loans,aes(x=MaritalStatus,y=LateInstallments,
   labs(title="Boxplot for Late Installments per MaritalStatus",x="MaritalStatus",y="Late Installments")+
   theme_bw()+coord_flip()+
   theme(legend.position = "none")
+
+ggplot(data = loans,
+       aes(x = LateInstallments, y = ProductGroup1Name)) +
+  geom_boxplot()
 
 
 ##plot data
@@ -95,36 +104,49 @@ plot(loans$LateInstallments, factor(loans$MaritalStatus), type="p", xlim=range(6
 #"medium delinquency" as having 3-4 late installments; 
 #and "high delinquency" as having 4+ late installments per loan (not per customer).
 loans$Delinquency <- factor(loans$LateInstallments)
-levels(loans$Delinquency) <- list(None = 0, Low = 1:2, Medium = 3:4, High = 5:18 )
-#levels(loans$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
+#levels(loans$Delinquency) <- list(None = 0, Low = 1:2, Medium = 3:4, High = 5:18 )
+levels(loans$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
 summary(factor(loans$Delinquency))
+
+
+#probit and logit ?
+loans$is_low <- factor(loans$Delinquency)
+levels(loans$is_low) <- list( Low = 0:2, notLow=3:18 )
+summary(factor(loans$is_low)) # make dummy 0 1 ?
+
+loans$is_high <- factor(loans$Delinquency)
+levels(loans$is_high) <- list( not_high = 0:4, high=5:18 )
+summary(factor(loans$is_high)) # problem
 
 # Make date variable : day, month, year #inspect how it plots
 
 #Age:
+
+library(tidyr)
+loans2 <- separate(data = loans, col = BirthDate, into = c('day_birth', 'month_birth', 'year_birth'))
+View(loans2)
+class(loans2$year_birth)
+loans2$year <- as.numeric(loans2$year_birth)
+class(loans2$year_birht)
+loans2$age <- 2021-loans2$year_birth
+hist(loans2$age)
+plot(loans2$age, loans2$LateInstallments)
+#Age at disbursement:
+#Age groups:
+
+loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
+loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
+loans2$age_at_disbusement <- loans$date.new - loans$date.now
+loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
 #Separate year from BirthDate column:
-# method 1:
-loans$Date_of_birth <- data.frame(do.call("rbind", strsplit(as.character(loans$BirthDate), "/", fixed = TRUE)))
-lapply(Date_of_birth, transform, Date_of_birth.X3 = 2021 -  Date_of_birth.X3)
 
-#method 2:
-install.packages("stringr")
-library(stringr)
-as(loans$BirthDate, integer , strict=TRUE, ext)
-str_split_fixed(loans$BirthDate, "/", 3)
-lapply(Date_of_birth, transform, Date_of_birth.X3 = 2021 -  Date_of_birth.X3)
+#
+library(dplyr)
+loans_per_customer<- tally(group_by(loans, CustomerId))
+loans_per_customer <- as.numeric(loans_per_customer)
+hist(loans_per_customer)
 
 
-#method 3:
-install.packages("tidyr")
-library(tidyr) 
-loans %>%
-separate(loans$BirthDate, c("month", "day", "year"), "/")
-
-library(eeptools)
-x <- as.Date(loans$BirthDate)
-age_calc(x[1],x[2], units = "years")
-# Age groups:
 
 #Additional variables that would be relevant if available:
 #occupation
@@ -149,26 +171,54 @@ Male_percentage <- 26313 / (39061 + 26313)
 Male_percentage
 
 #Deliquency rates per Age:
+table(loans$, loans$Delinquency)
 
 #Deliquency rates per ProductGroupName:
+table(loans$ProductGroup1Name, loans$Delinquency)
 
-#Deliquency rates per DisbursementDate:
+#Deliquency rates per DisbursementDate: #### treat as date ! Also: use year
+table(loans$DisbursementDate, loans$Delinquency)
 
-#Deliquency rates per DisbursedAmount:
+#Deliquency rates per DisbursedAmount: ### 
+table(loans$DisbursedAmount, loans$Delinquency)
 
+library(GGally)
+loans_subset <- loans[c("Gender","MaritalStatus","ProductGroup1Name","Delinquency")]
+ggpairs(data=loans_subset,aes(colour=Delinquency))
 
 ## REGRESSIONS: 
-# simple OLS: with Late Installments
-# simple regression with time and individual FE 
+# Not appropriate: simple OLS (with Late Installments)
+# simple regression with time and individual FE : PROBLEM: assumptions violated, estimates are not consistent
 lm1 <- lm(loans$LateInstallments ~ factor(loans$Gender) + factor(loans$MaritalStatus) + loans$DisbursedAmount + factor(loans$ProductGroup1Name) + factor(loans$CustomerId) + loans$WorkDaysLoanWasInArrears)
 summary(lm1)
 
 # tobit : for late installments
-# adequate because of truncated data (lots of zeros)
+# adequate because of truncated data (lots of zeros), 
+# it is called " censored regression"
 # interpretation - signal, but for magnitude, calculate the marginal effect
+#https://stats.idre.ucla.edu/r/dae/tobit-models/
+require(ggplot2)
+require(GGally)
+require(VGAM)
 
 # ologit: for categorical variable (Deliquency rates: none, low, medium, high)
+# First we evaluate at the mean:
+require(foreign)
+require(ggplot2)
+require(MASS)
+require(Hmisc)
+require(reshape2)
+# https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
 
+mspread = mean(spread)
+margins(ologit1, at =list(spread=mspread))
+
+#Let's try over a range from 1 to 10
+margins(ologit1, at =list(spread=1:10))
+
+stargazer(list(lm2,prbt2,mlog2), type = "text", 
+          keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
+          digits=3, keep=c(1:10))
 #Machine learning methods
 library(caret)
 
@@ -178,3 +228,5 @@ library(caret)
 #CorrelationMatrix
 
 #PS: putting into colab might be nicer for visualizing 
+
+# Clean up:df$x <- NULL
