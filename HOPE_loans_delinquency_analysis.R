@@ -13,22 +13,6 @@ summary(loans_clean)
 #There were 42 missing values, ommited now
 
 ######################Step 3: Creating new variables###########################
-## DELINQUENCY 
-loans4$Delinquency <- factor(loans4$LateInstallments)
-#levels(loans$Delinquency) <- list(None = 0, Low = 1:2, Medium = 3:4, High = 5:18 )
-levels(loans4$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
-summary(factor(loans4$Delinquency))
-loans4$Deliquency <- ordered(loans4$Deliquency)
-
-
-#for probit and logit ?
-loans$is_low <- factor(loans$Delinquency)
-levels(loans$is_low) <- list( Low = 0:2, notLow=3:18 )
-summary(factor(loans$is_low)) # make dummy 0 1 ?
-
-loans$is_high <- factor(loans$Delinquency)
-levels(loans$is_high) <- list( not_high = 0:4, high=5:18 )
-summary(factor(loans$is_high)) # problem
 
 #### AGE:
 
@@ -44,19 +28,6 @@ hist(loans2$age) # inspect its distribution
 plot(loans2$age, loans2$LateInstallments)
 #remove outliers? age >80 (looks like 88, 89)
 
-#Age at disbursement:
-
-loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
-loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
-loans2$age_at_disbusement <- loans$date.new - loans$date.now
-loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
-
-
-#Age groups :
-loans$age_groups <- factor(loans$age)
-levels(loans$Delinquency) <- list(   elderly = )
-summary(factor(loans$Delinquency))
-
 ### DISBURSEMENT DATE: 
 
 library(tidyr)
@@ -69,21 +40,19 @@ substrRight <- function(x, n){
   substr(x, nchar(x)-n+1, nchar(x))
 }
 loans3$month_Disb.correct <- substrRight(loans3$month_disbursementDate_0, 2)
-# use as character still ! 
+# use as character still , otherwise, 0 will be dropped! 
 #concat just year and month
-loans4<-transform(loans3, monthyear_Disbursement.correct=paste0(year_disb.num, month_Disb.correct))
+loans4<-transform(loans3, monthyear_Disbursement.correct=paste0(year_disbursementDate, month_Disb.correct))
 loans4$monthyear_Disbursement.num <- as.numeric(loans4$monthyear_Disbursement.correct) # transform to numeric
-summary(loans4$monthyear_Disbursement.num)
-summary(factor(loans4$monthyear_Disbursement.num))
-plot(factor(loans4$monthyear_Disbursement.num), loans4$LateInstallments)
-plot(factor(loans4$monthyear_Disbursement.num))
 
+## DELINQUENCY 
 
-# Make date variable : day, month, year #inspect how it plots
+loans4$Delinquency <- factor(loans4$LateInstallments)
+#levels(loans$Delinquency) <- list(None = 0, Low = 1:2, Medium = 3:4, High = 5:18 )
+levels(loans4$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
+summary(factor(loans4$Delinquency))
+loans4$Delinquency <- ordered(loans4$Delinquency)
 
-
-write.csv(loans4,"HOPE_data_for_analysis.csv" )
-write.dta(loans4, "HOPE_data_for_analysis.dta")
 
 # LOANS PER CUSTOMER:
 library(dplyr)
@@ -92,6 +61,7 @@ loans_per_customer <- as.numeric(loans_per_customer)
 hist(loans_per_customer)
 # further: put in dataset
 
+# Make date variable : day, month, year #inspect how it plots
 
 #Additional variables that would be relevant if available:
 #occupation
@@ -104,8 +74,14 @@ hist(loans_per_customer)
 # Tables:
 
 #Deliquency rates per marital status:
-table(loans$MaritalStatus, loans$Delinquency)
+Deliquency_per_MaritalStatus <- table(loans4$MaritalStatus, loans4$Delinquency)
+
 #obs: rename column for typo (If I have time)
+
+
+library(arsenal) 
+table_one <- tableby(continent ~ ., data = gapminder) 
+summary(table_one, title = "Gapminder Data")
 
 #Deliquency rates per Gender:
 table(loans$Gender, loans$Delinquency)
@@ -194,3 +170,31 @@ library(caret)
 
 # Clean up:df$x <- NULL
 # Check on Sublime: data set loan vs. loans2
+
+
+write.csv(loans4,"HOPE_data_for_analysis.csv" )
+write.dta(loans4, "HOPE_data_for_analysis.dta")
+
+######################################################## extra:
+#Age at disbursement:
+
+loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
+loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
+loans2$age_at_disbusement <- loans$date.new - loans$date.now
+loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
+
+
+#Age groups :
+loans$age_groups <- factor(loans$age)
+levels(loans$Delinquency) <- list(   elderly = )
+summary(factor(loans$Delinquency))
+
+
+#for probit and logit ?
+loans$is_low <- factor(loans$Delinquency)
+levels(loans$is_low) <- list( Low = 0:2, notLow=3:18 )
+summary(factor(loans$is_low)) # make dummy 0 1 ?
+
+loans$is_high <- factor(loans$Delinquency)
+levels(loans$is_high) <- list( not_high = 0:4, high=5:18 )
+summary(factor(loans$is_high)) # problem

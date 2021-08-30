@@ -35,7 +35,7 @@ barchart(factor(loans$ProductGroup1Name))
 summary(loans$BirthDate)
 summary(loans$DisbursementDate)
 #just checking, but not too relevant to know its statistics:
-summary(factor(loans$LoanID))
+summary(loans$LoanID)
 summary(loans$CustomerId)
 
 # Obs: I could have done in one code : summary(loans), but then would need to first create new variables for the categorical ones
@@ -49,7 +49,7 @@ hist(loans$CustomerId, 65421, main="CustomerID", xlab="CustomerID", ylab="Number
 
 #install.packages("plyr") # if not installed previously
 library(plyr)
-count(loans, c("loans$CustomerID", "loans$LoanID"))
+count(loans, c("loans$CustomerId", "loans$LoanID"))
 # Maybe: some info about difference of date between disbursements ? (create variable)
 
 #inspect missing data:
@@ -100,3 +100,11 @@ ggplot(data = loans,
 plot(loans$LateInstallments, factor(loans$MaritalStatus), type="p", xlim=range(60,80), ylim=range(70,320), main="Relationship Between MaritalStatus and LateInstallments", xlab="LateInstallments", ylab="MaritalStatus")
 
 
+################################## AFTER CREATING NEW VARIABLES:
+
+# DISBURSEMENT DATE:
+#Exploring the variable:
+summary(loans4$monthyear_Disbursement.num)
+summary(factor(loans4$monthyear_Disbursement.num))
+plot(factor(loans4$monthyear_Disbursement.num), loans4$LateInstallments)
+plot(factor(loans4$monthyear_Disbursement.num))
