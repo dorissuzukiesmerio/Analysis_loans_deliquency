@@ -87,6 +87,12 @@ levels(loans4$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
 summary(factor(loans4$Delinquency))
 loans4$Delinquency <- ordered(loans4$Delinquency)
 
+
+# Dummies of higher and lower delinquency for probit and logit models:
+
+loans4$higher_delinquency <- ifelse(loans4$Delinquency == 'High', 1, 0)
+loans4$lower_delinquency <- ifelse(loans4$Delinquency == 'Low', 1, 0)
+
 #Clean up:
 loans4$month_disbursementDate_0 <- NULL # dropping
 loans4$month_Disb.correct <- NULL
@@ -230,11 +236,3 @@ levels(loans$Delinquency) <- list(   elderly = )
 summary(factor(loans$Delinquency))
 
 
-#for probit and logit ?
-loans$is_low <- factor(loans$Delinquency)
-levels(loans$is_low) <- list( Low = 0:2, notLow=3:18 )
-summary(factor(loans$is_low)) # make dummy 0 1 ?
-
-loans$is_high <- factor(loans$Delinquency)
-levels(loans$is_high) <- list( not_high = 0:4, high=5:18 )
-summary(factor(loans$is_high)) # problem

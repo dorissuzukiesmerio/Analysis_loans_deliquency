@@ -54,3 +54,12 @@ predict1 <- predict(model,testing)
 postResample(prediction,testing$Ozone)
 
 confusionMatrix(predict,testing)
+
+
+############Feauture of importance
+library(adabag)
+library(caret)
+ModFit_adaboost <- boosting(Delinquency~.,data=training,mfinal = 10, coeflearn = "Breiman")
+importanceplot(ModFit_adaboost)
+predict_Ada <- predict(ModFit_adaboost,newdata=testing)
+confusionMatrix(testing$Species,as.factor(predict_Ada$class))
