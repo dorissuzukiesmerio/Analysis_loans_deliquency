@@ -96,7 +96,7 @@ ggplot(data = loans,
 plot(loans$LateInstallments, factor(loans$MaritalStatus), type="p", xlim=range(60,80), ylim=range(70,320), main="Relationship Between MaritalStatus and LateInstallments", xlab="LateInstallments", ylab="MaritalStatus")
 
 
-#Step 3: Creating new variables
+######################Step 3: Creating new variables###########################
 # Low, medium and high delinquency:
 
 #Criteria:
@@ -109,7 +109,7 @@ levels(loans$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
 summary(factor(loans$Delinquency))
 
 
-#probit and logit ?
+#for probit and logit ?
 loans$is_low <- factor(loans$Delinquency)
 levels(loans$is_low) <- list( Low = 0:2, notLow=3:18 )
 summary(factor(loans$is_low)) # make dummy 0 1 ?
@@ -120,32 +120,59 @@ summary(factor(loans$is_high)) # problem
 
 # Make date variable : day, month, year #inspect how it plots
 
-#Age:
+#### AGE:
 
+#install.packages("tidyr")# if not installed
 library(tidyr)
-loans2 <- separate(data = loans, col = BirthDate, into = c('day_birth', 'month_birth', 'year_birth'))
-View(loans2)
-class(loans2$year_birth)
-loans2$year <- as.numeric(loans2$year_birth)
-class(loans2$year_birht)
-loans2$age <- 2021-loans2$year_birth
-hist(loans2$age)
+loans2 <- separate(data = loans, col = BirthDate, into = c('day_birth', 'month_birth', 'year_birth')) #Separate year from BirthDate column
+View(loans2) # checking if columns were correctly created
+class(loans2$year_birth) # it is not numeric, but character format
+loans2$year <- as.numeric(loans2$year_birth) # transform to numeric
+class(loans2$year)#checking : now, it is numeric, ready for calculation
+loans2$age <- 2021-loans2$year # create age column
+hist(loans2$age) # inspect its distribution
 plot(loans2$age, loans2$LateInstallments)
+#remove outliers? age >80 (looks like 88, 89)
+
 #Age at disbursement:
-#Age groups:
 
 loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
 loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
 loans2$age_at_disbusement <- loans$date.new - loans$date.now
 loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
-#Separate year from BirthDate column:
 
-#
+
+#Age groups :
+loans$age_groups <- factor(loans$age)
+levels(loans$Delinquency) <- list(   elderly = )
+summary(factor(loans$Delinquency))
+
+# DISBURSEMENT DATE: 
+
+library(tidyr)
+loans3 <- separate(data = loans2, col = DisbursementDate, into = c('month_disbursementDate', 'day_disbursementDate', 'year_disbursementDate')) #Separate year from DisbursementDate column
+#merge just year and month
+loans5$monthyearDisbursement <- as.Date(with(loans5, paste(year, mon, sep="-")), "%Y-%m")
+loans5$monthyearDisbursement
+
+View(loans2) # checking if columns were correctly created
+class(loans2$year_birth) # it is not numeric, but character format
+loans2$year <- as.numeric(loans2$year_birth) # transform to numeric
+class(loans2$year_birth)#checking : now, it is numeric, ready for calculation
+loans2$age <- 2021-loans2$year_birth # create age column
+hist(loans2$age) # inspect its distribution
+plot(loans2$age, loans2$LateInstallments)
+
+# transform to date before separating?
+loans2$DisbursementDate.new <- as.Date(as.character(loans2$DisbursementDate), format="%m/%d/%Y")
+hist(loans2$DisbursementDate.new, 36)
+
+# LOANS PER CUSTOMER:
 library(dplyr)
 loans_per_customer<- tally(group_by(loans, CustomerId))
 loans_per_customer <- as.numeric(loans_per_customer)
 hist(loans_per_customer)
-
+# further: put in dataset
 
 
 #Additional variables that would be relevant if available:
@@ -187,6 +214,25 @@ loans_subset <- loans[c("Gender","MaritalStatus","ProductGroup1Name","Delinquenc
 ggpairs(data=loans_subset,aes(colour=Delinquency))
 
 ## REGRESSIONS: 
+
+# ologit: for categorical variable (Deliquency rates: none, low, medium, high)
+# First we evaluate at the mean:
+library(foreign)
+library(ggplot2)
+library(MASS)
+library(Hmisc)
+library(reshape2)
+## fit ordered logit model and store results 'm'
+ologit <- polr(Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + , data = loans2, Hess=TRUE)
+summary(ologit)
+# https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
+
+mspread = mean(spread)
+margins(ologit1, at =list(spread=mspread))
+
+#Let's try over a range from 1 to 10
+margins(ologit1, at =list(spread=1:10))
+
 # Not appropriate: simple OLS (with Late Installments)
 # simple regression with time and individual FE : PROBLEM: assumptions violated, estimates are not consistent
 lm1 <- lm(loans$LateInstallments ~ factor(loans$Gender) + factor(loans$MaritalStatus) + loans$DisbursedAmount + factor(loans$ProductGroup1Name) + factor(loans$CustomerId) + loans$WorkDaysLoanWasInArrears)
@@ -201,20 +247,6 @@ require(ggplot2)
 require(GGally)
 require(VGAM)
 
-# ologit: for categorical variable (Deliquency rates: none, low, medium, high)
-# First we evaluate at the mean:
-require(foreign)
-require(ggplot2)
-require(MASS)
-require(Hmisc)
-require(reshape2)
-# https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
-
-mspread = mean(spread)
-margins(ologit1, at =list(spread=mspread))
-
-#Let's try over a range from 1 to 10
-margins(ologit1, at =list(spread=1:10))
 
 stargazer(list(lm2,prbt2,mlog2), type = "text", 
           keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
@@ -230,3 +262,4 @@ library(caret)
 #PS: putting into colab might be nicer for visualizing 
 
 # Clean up:df$x <- NULL
+# Check on Sublime: data set loan vs. loans2
