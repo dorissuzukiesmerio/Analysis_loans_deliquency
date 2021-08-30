@@ -34,7 +34,7 @@ Variables created :
 
 Primary method:
 
-- Ologit: appropriate when the dependent variable is categorical
+- Ologit (ordinal logistic regression) : appropriate when the dependent variable is categorical and ordered
   -  "Delinquency rate" is the variable we are trying to explain (called the dependant variable) -> It is a categorical variable (low, medium, high), not a continuous one.
 
 Other methods to compare:
@@ -56,3 +56,7 @@ N/A
 - Include other variables that the literature has given evidence to be relevant in analyzing loan delinquency : location, occupation, purpose of the loan
 - Create variable : count of other of loans per customer, and date difference between disbursements 
 - Small detail : Calculate age at disbursement, create age categories
+
+Questions:
+
+- What is the unit of the DisbursedAmount ? 

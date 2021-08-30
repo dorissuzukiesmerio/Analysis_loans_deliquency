@@ -18,6 +18,7 @@ loans4$Delinquency <- factor(loans4$LateInstallments)
 #levels(loans$Delinquency) <- list(None = 0, Low = 1:2, Medium = 3:4, High = 5:18 )
 levels(loans4$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
 summary(factor(loans4$Delinquency))
+loans4$Deliquency <- ordered(loans4$Deliquency)
 
 
 #for probit and logit ?
@@ -143,8 +144,14 @@ install.packages("polr")
 library(polr)
 #Ordering the dependent variable
 loans4$Delinquency.ordered = factor(loans4$Delinquency, levels = c("low", "medium", "high"), ordered = TRUE) 
-data$peers = factor(data$peers, levels = c("0", "1"), ordered = TRUE) 
-data$coupon = factor(data$coupon, levels = c("0", "1"), ordered = TRUE)
+Deliquency_frequency <- table(loans4$Deliquency.ordered)
+install.packages("remotes")
+library(remotes)
+install_github("cran/zelig")
+install_github("cran/MASS")
+#install.packages("zeligverse")
+#library(zeligverse)
+
 ## fit ordered logit model and store results 'ologit1'
 ologit1 <- polr( Delinquency.ordered ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + monthyear_Disbursement.num , data = loans4, Hess=TRUE)
 summary(ologit1)
