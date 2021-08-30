@@ -26,6 +26,7 @@ Descriptive statistics tables, boxplots and histograms reveal that :
 Variables created :
 
 - Age (from BirthDate)
+- Disbursement YearMonth : to include the dummies 
 
 #### Methods: 
 
