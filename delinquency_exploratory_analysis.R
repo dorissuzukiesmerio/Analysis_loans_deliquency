@@ -8,16 +8,28 @@ loans <- read_csv("HOPE_International/HOPELoansSince2019.csv")
 colnames(loans) #Variable names
 View(loans) #General overview of the dataset
 
-#Descriptive statistics of main variables 
+#Descriptive statistics of continuous variables: 
 #(Min. 1st Qu.  Median    Mean 3rd Qu.    Max.):
 summary(loans$DisbursedAmount)
 summary(loans$LateInstallments)
 summary(loans$WorkDaysLoanWasInArrears)
+#In visual form:
+boxplot(loans$DisbursedAmount)
+boxplot(loans$LateInstallments)
+boxplot(loans$WorkDaysLoanWasInArrears)
+
+hist(loans$DisbursedAmount, 500)
+hist(loans$LateInstallments, 17)
+hist(loans$WorkDaysLoanWasInArrears, 30)
 
 # For categorical/ character variables : use "factor". Now, summary will show  how many in each category
 summary(factor(loans$Gender))
 summary(factor(loans$MaritalStatus))
 summary(factor(loans$ProductGroup1Name))
+# In visual form:
+barchart(factor(loans$Gender))
+barchart(factor(loans$MaritalStatus))
+barchart(factor(loans$ProductGroup1Name))
 
 #not too important at this stage:
 summary(loans$BirthDate)
