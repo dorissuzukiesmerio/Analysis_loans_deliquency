@@ -25,8 +25,10 @@ Descriptive statistics tables, boxplots and histograms reveal that :
 
 Variables created :
 
+- Delinquency levels (from LateInstallements)
+
 - Age (from BirthDate)
-- Disbursement YearMonth : to include the dummies 
+- Disbursement YearMonth : to include the dummies in the regression
 
 #### Methods: 
 
