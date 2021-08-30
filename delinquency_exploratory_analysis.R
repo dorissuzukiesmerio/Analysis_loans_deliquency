@@ -31,9 +31,10 @@ barchart(factor(loans$Gender))
 barchart(factor(loans$MaritalStatus))
 barchart(factor(loans$ProductGroup1Name))
 
-#not too important at this stage:
-summary(loans$BirthDate)
-summary(loans$DisbursementDate)
+#Dates:
+summary(factor(loans$BirthDate))
+summary(factor(loans$DisbursementDate))
+
 #just checking, but not too relevant to know its statistics:
 summary(loans$LoanID)
 summary(loans$CustomerId)

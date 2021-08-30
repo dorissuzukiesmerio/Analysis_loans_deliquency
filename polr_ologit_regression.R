@@ -516,6 +516,18 @@ simulate.polr <- function(object, nsim = 1, seed = NULL, ...)
   val
 }
 
-ologit1 <- polr( Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + DisbursementDate_YearMonth , data = loans4, Hess=TRUE)
+ologit1 <- polr( Delinquency ~  factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) , data = loans4, Hess=TRUE)
 summary(ologit1)
-summary(loans4)
+
+## store table
+(ctable <- coef(summary(ologit1)))
+
+## calculate and store p values
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+
+## combined table
+(ctable <- cbind(ctable, "p value" = p))
+
+#Confidence Intervals for the estimates :
+(ci <- confint(ologit1)) # default method gives profiled CIs
+confint.default(ologit1) # CIs assuming normality

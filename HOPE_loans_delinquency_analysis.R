@@ -28,6 +28,25 @@ hist(loans2$age) # inspect its distribution
 plot(loans2$age, loans2$LateInstallments)
 #remove outliers? age >80 (looks like 88, 89)
 
+##PROBLEM: 
+summary(factor(loans$BirthDate)) # 82% IS NA
+# how to deal?
+# method 1: set NA to mean
+NA2mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
+new_loans4 <-replace(loans4, TRUE, lapply(loans4, NA2mean))
+summary(factor(new_loans4$age))
+
+# method 2: imputation with Bootstrap Aggregation Imputation:
+library(caret)
+PreImputeBag <- preProcess(loans4,method="bagImpute")
+DataImputeBag <- predict(PreImputeBag,loans4)
+
+# method 3: imputation via knn 
+MData <- airquality[,-c(1,5,6)]
+PreImputeKNN <- preProcess(MData,method="knnImpute",k=5)
+DataImputeKNN <- predict(PreImputeKNN,MData)
+#Convert back to original scale
+RescaleDataM <- t(t(DataImputeKNN)*PreImputeKNN$std+PreImputeKNN$mean)
 ### DISBURSEMENT DATE: 
 
 library(tidyr)
@@ -59,6 +78,7 @@ loans4$month_Disb.correct <- NULL
 loans4$monthyear_Disbursement.correct <- NULL
 loans4$DisbursementDate_YearMonth<-loans4$monthyear_Disbursement.num # renaming
 loans4$monthyear_Disbursement.num <- NULL
+
 # LOANS PER CUSTOMER:
 library(dplyr)
 loans_per_customer<- tally(group_by(loans, CustomerId))
