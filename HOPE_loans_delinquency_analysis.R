@@ -34,6 +34,15 @@ summary(factor(loans$BirthDate)) # 82% IS NA
 # OPTION 1: JUST USE NON-MISSING FOR THIS ANALYSIS
 subset <-  loans4[complete.cases(loans4), ]
 # OPTION 2: CHECK HOW GOOD THE EXPLANATORY VARIABLES ARE IN PREDICTING, TO SEE IF IMPUTATION WOULD WORK
+# See how good is the subset for prediction
+subset <-  loans4[complete.cases(loans4), ]
+#split using k-fold
+require(caret)
+flds <- createFolds(y, k = 2, list = TRUE, returnTrain = FALSE)
+names(flds)[1] <- "train"
+training <- subset[flds$train,]
+testing <- subset[ flds[[2]], ]
+
 # method 1: set NA to mean
 NA2mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 new_loans4 <-replace(loans4, TRUE, lapply(loans4, NA2mean))
