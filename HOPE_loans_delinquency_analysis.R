@@ -53,13 +53,20 @@ levels(loans4$Delinquency) <- list(Low = 0:2, Medium = 3:4, High = 5:18 )
 summary(factor(loans4$Delinquency))
 loans4$Delinquency <- ordered(loans4$Delinquency)
 
-
+#Clean up:
+loans4$month_disbursementDate_0 <- NULL # dropping
+loans4$month_Disb.correct <- NULL
+loans4$monthyear_Disbursement.correct <- NULL
+loans4$DisbursementDate_YearMonth<-loans4$monthyear_Disbursement.num # renaming
+loans4$monthyear_Disbursement.num <- NULL
 # LOANS PER CUSTOMER:
 library(dplyr)
 loans_per_customer<- tally(group_by(loans, CustomerId))
 loans_per_customer <- as.numeric(loans_per_customer)
 hist(loans_per_customer)
 # further: put in dataset
+
+
 
 # Make date variable : day, month, year #inspect how it plots
 
@@ -69,9 +76,7 @@ hist(loans_per_customer)
 #number of people in household
 #location (country, city, )
 
-#Step 4:
-
-# Tables:
+################################### Tables:
 
 #Deliquency rates per marital status:
 Deliquency_per_MaritalStatus <- table(loans4$MaritalStatus, loans4$Delinquency)
@@ -107,7 +112,7 @@ library(GGally)
 loans_subset <- loans[c("Gender","MaritalStatus","ProductGroup1Name","Delinquency")]
 ggpairs(data=loans_subset,aes(colour=Delinquency))
 
-## REGRESSIONS: 
+################################ REGRESSIONS: 
 
 # ologit: for categorical variable (Deliquency rates: none, low, medium, high)
 # First we evaluate at the mean:
