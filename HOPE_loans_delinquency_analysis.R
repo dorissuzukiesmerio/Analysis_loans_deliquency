@@ -149,23 +149,31 @@ summary(factor(loans$Delinquency))
 
 # DISBURSEMENT DATE: 
 
-library(tidyr)
-loans3 <- separate(data = loans2, col = DisbursementDate, into = c('month_disbursementDate', 'day_disbursementDate', 'year_disbursementDate')) #Separate year from DisbursementDate column
-#merge just year and month
-loans5$monthyearDisbursement <- as.Date(with(loans5, paste(year, mon, sep="-")), "%Y-%m")
-loans5$monthyearDisbursement
-
-View(loans2) # checking if columns were correctly created
-class(loans2$year_birth) # it is not numeric, but character format
-loans2$year <- as.numeric(loans2$year_birth) # transform to numeric
-class(loans2$year_birth)#checking : now, it is numeric, ready for calculation
-loans2$age <- 2021-loans2$year_birth # create age column
-hist(loans2$age) # inspect its distribution
-plot(loans2$age, loans2$LateInstallments)
-
 # transform to date before separating?
 loans2$DisbursementDate.new <- as.Date(as.character(loans2$DisbursementDate), format="%m/%d/%Y")
 hist(loans2$DisbursementDate.new, 36)
+
+library(tidyr)
+loans3 <- separate(data = loans2, col = DisbursementDate, into = c('month_disbursementDate', 'day_disbursementDate', 'year_disbursementDate')) #Separate year from DisbursementDate column
+
+# Add leading zeros
+loans3$month_disbursementDate_0 <- paste0("0", loans3$month_disbursementDate)
+#Use only the 2 
+substrRight <- function(x, n){
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+loans3$month_Disb.correct <- substrRight(loans3$month_disbursementDate_0, 2)
+
+#transform into numeric:
+loans3$month_disb.num <- as.numeric(loans3$month_Disb.correct)
+#loans3$day_disb.num <- as.numeric(loans3$day_disbursementDate)
+loans3$year_disb.num <- as.character(loans3$year_disbursementDate)
+
+#concat just year and month
+loans4<-transform(loans3, monthyear_Disbursement.correct=paste0(year_disb.num, month_Disb.correct))
+loans4$monthyear_Disbursement.num <- as.numeric(loans4$monthyear_Disbursement.correct) 
+summary(loans4$monthyear_Disbursement.num)
+
 
 # LOANS PER CUSTOMER:
 library(dplyr)
@@ -223,7 +231,7 @@ library(MASS)
 library(Hmisc)
 library(reshape2)
 ## fit ordered logit model and store results 'm'
-ologit <- polr(Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + , data = loans2, Hess=TRUE)
+ologit <- polr(Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + monthyear_Disbursement.num , data = loans2, Hess=TRUE)
 summary(ologit)
 # https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
 
