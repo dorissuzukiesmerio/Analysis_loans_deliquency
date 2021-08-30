@@ -516,7 +516,7 @@ simulate.polr <- function(object, nsim = 1, seed = NULL, ...)
   val
 }
 
-ologit1 <- polr( Delinquency ~  factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) , data = loans4, Hess=TRUE)
+ologit1 <- polr( Delinquency ~  factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) , data = subset, Hess=TRUE)
 summary(ologit1)
 
 ## store table

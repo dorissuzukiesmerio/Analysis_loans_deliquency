@@ -32,7 +32,7 @@ plot(loans2$age, loans2$LateInstallments)
 summary(factor(loans$BirthDate)) # 82% IS NA
 # how to deal?
 # OPTION 1: JUST USE NON-MISSING FOR THIS ANALYSIS
-
+subset <-  loans4[complete.cases(loans4), ]
 # OPTION 2: CHECK HOW GOOD THE EXPLANATORY VARIABLES ARE IN PREDICTING, TO SEE IF IMPUTATION WOULD WORK
 # method 1: set NA to mean
 NA2mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
@@ -160,7 +160,7 @@ install_github("cran/MASS")
 #library(zeligverse)
 
 ## fit ordered logit model and store results 'ologit1'
-ologit1 <- polr( Delinquency.ordered ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + monthyear_Disbursement.num , data = loans4, Hess=TRUE)
+ologit1 <- polr( Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + DisbursementDate_YearMonth , data = subset, Hess=TRUE)
 summary(ologit1)
 
 # https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
