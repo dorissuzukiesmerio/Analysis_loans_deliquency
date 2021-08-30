@@ -31,6 +31,9 @@ plot(loans2$age, loans2$LateInstallments)
 ##PROBLEM: 
 summary(factor(loans$BirthDate)) # 82% IS NA
 # how to deal?
+# OPTION 1: JUST USE NON-MISSING FOR THIS ANALYSIS
+
+# OPTION 2: CHECK HOW GOOD THE EXPLANATORY VARIABLES ARE IN PREDICTING, TO SEE IF IMPUTATION WOULD WORK
 # method 1: set NA to mean
 NA2mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 new_loans4 <-replace(loans4, TRUE, lapply(loans4, NA2mean))
@@ -41,12 +44,15 @@ library(caret)
 PreImputeBag <- preProcess(loans4,method="bagImpute")
 DataImputeBag <- predict(PreImputeBag,loans4)
 
-# method 3: imputation via knn 
-MData <- airquality[,-c(1,5,6)]
+# method 3: imputation via knn
+install.packages("RANN")
+library(RANN)
+MData <- loans4[,-c(1,5,6)]
 PreImputeKNN <- preProcess(MData,method="knnImpute",k=5)
 DataImputeKNN <- predict(PreImputeKNN,MData)
 #Convert back to original scale
 RescaleDataM <- t(t(DataImputeKNN)*PreImputeKNN$std+PreImputeKNN$mean)
+
 ### DISBURSEMENT DATE: 
 
 library(tidyr)
@@ -156,7 +162,7 @@ install_github("cran/MASS")
 ## fit ordered logit model and store results 'ologit1'
 ologit1 <- polr( Delinquency.ordered ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + monthyear_Disbursement.num , data = loans4, Hess=TRUE)
 summary(ologit1)
-summary(loans4)
+
 # https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
 
 mspread = mean(spread)

@@ -36,8 +36,8 @@ summary(factor(loans$BirthDate))
 summary(factor(loans$DisbursementDate))
 
 #just checking, but not too relevant to know its statistics:
+summary(loans$CustomerId) # from 100112 to 165421
 summary(loans$LoanID)
-summary(loans$CustomerId)
 
 # Obs: I could have done in one code : summary(loans), but then would need to first create new variables for the categorical ones
 #Check: unique LoanID and unique Customer ? No. See distribution of loans per customer
@@ -57,9 +57,22 @@ count(loans, c("loans$CustomerId", "loans$LoanID"))
 summary(loans)
 
 #inspect distribution of the variables
+
 # Histograms:
 ##histogram of LateInstallments:
 hist(loans$LateInstallments, main="Distribution of Number of Late Installments per Loan", xlab="Number of late installments per loan", ylab="Number of loans")
+#Nicer look:
+install.packages("ggplot2")
+library(ggplot)
+ggplot2(data=loans4, aes(loans4$LateInstallments)) + 
+  geom_histogram(aes(y =..density..), 
+                 breaks=seq(20, 50, by = 2), 
+                 col="purple", 
+                 fill="orange", 
+                 alpha=.2) + 
+  geom_density(col=2) + 
+  labs(title="Number of Late Installement per loan", x=" Count of late Installements", y="Number of loans")
+
 ##histogram of Disbursement Amount:
 hist(loans$DisbursedAmount, 200, main="Disbursement amount", xlab="DisbursementAmount", ylab="Number of loans with that amount")
 ## lots of zeros: tobit is an appropriate model 
