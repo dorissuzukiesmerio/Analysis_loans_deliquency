@@ -1,14 +1,16 @@
 ################################### Tables:
 
 #Deliquency rates per marital status:
-Deliquency_per_MaritalStatus <- table(loans4$MaritalStatus, loans4$Delinquency)
+Delinquency_per_MaritalStatus <- table(loans4$MaritalStatus, loans4$Delinquency)
+Delinquency_per_MaritalStatus
 
-#obs: rename column for typo (If I have time)
+#obs: rename column for typo (If I have time): Seperated to Separated
 
-
+install.packages("arsenal")
 library(arsenal) 
-table_one <- tableby(continent ~ ., data = gapminder) 
+table_one <- tableby(Delinquency ~ MaritalStatus + Gender + ProductGroup1Name , data = loans4) 
 summary(table_one, title = "Gapminder Data")
+# create categories age groups and disbursement amounts
 
 #Deliquency rates per Gender:
 table(loans$Gender, loans$Delinquency)

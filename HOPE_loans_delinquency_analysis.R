@@ -80,7 +80,7 @@ hist(loans4$loans_per_customer)
 # further: put in dataset
 
 
-write.csv(loans4,"HOPE_dataset_loans4.csv" )
+write.csv(loans4,"HOPE_dataset_loans4_updated.csv" )
 
 # Make date variable : day, month, year #inspect how it plots
 
@@ -137,7 +137,7 @@ RescaleDataM <- t(t(DataImputeKNN)*PreImputeKNN$std+PreImputeKNN$mean)
 
 
 ######################################################## extra:
-#Age at disbursement:
+#Age at disbursement (to explore):
 
 loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
 loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
@@ -145,9 +145,12 @@ loans2$age_at_disbusement <- loans$date.new - loans$date.now
 loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
 
 
-#Age groups :
-loans$age_groups <- factor(loans$age)
-levels(loans$Delinquency) <- list(   elderly = )
-summary(factor(loans$age_groups))
+#Age groups (done):
+hist(loans4$age)
+loans4$age_groups <- factor(loans4$age)
+levels(loans4$age_groups) <- list( twenties = 20:29, thirties = 30:39, forties = 40:49, fifties = 50:59, sixties = 60:69)
+summary(factor(loans4$age_groups))
+loans4$age_groups <- ordered(loans4$age_groups)
+summary(loans4$age_groups)
 
 
