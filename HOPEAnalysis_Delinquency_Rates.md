@@ -36,6 +36,7 @@ Primary method:
 
 - Ologit (ordinal logistic regression) : appropriate when the dependent variable is categorical and ordered
   -  "Delinquency rate" is the variable we are trying to explain (called the dependant variable) -> It is a categorical variable (low, medium, high), not a continuous one.
+- Logit with 
 
 Other methods to compare:
 
