@@ -90,7 +90,7 @@ write.csv(loans4,"HOPE_dataset_loans4.csv" )
 #number of people in household
 #location (country, city, )
 
-#################### FIXING PROBLEMS:
+#################### FIXING variable PROBLEMS:
 ##PROBLEM: MISSING BIRTHDATE for a huge portion of the dataset
 summary(factor(loans$BirthDate)) # 82% IS NA
 # how to deal?
@@ -107,7 +107,13 @@ names(flds)[1] <- "train"
 training <- subset[flds$train,]
 testing <- subset[ flds[[2]], ]
 
-
+### Decision Tree
+install.packages("e1071")
+library(e1071)
+ModFit_rpart <- train(Delinquency~.,data=training,method="rpart",
+                      parms = list(split = "gini"))
+predict_rpart <- predict(ModFit_rpart,testing)
+confusionMatrix(predict_rpart, testing$Delinquency)
 
 # If adequate, then:
 # method 1: set NA to mean
@@ -142,6 +148,6 @@ loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
 #Age groups :
 loans$age_groups <- factor(loans$age)
 levels(loans$Delinquency) <- list(   elderly = )
-summary(factor(loans$Delinquency))
+summary(factor(loans$age_groups))
 
 
