@@ -33,6 +33,7 @@ loans2$age <- 2021-loans2$year # create age column
 hist(loans2$age) # inspect its distribution
 plot(loans2$age, loans2$LateInstallments)
 #remove outlier? age==89
+# PROBLEM: 82% IS MISSING
 
 ### DISBURSEMENT DATE: 
 
@@ -94,8 +95,15 @@ write.csv(loans4,"HOPE_dataset_loans4_updated.csv" )
 ##PROBLEM: MISSING BIRTHDATE for a huge portion of the dataset
 summary(factor(loans$BirthDate)) # 82% IS NA
 # how to deal?
-# OPTION 1: JUST USE NON-MISSING FOR THIS ANALYSIS
-subset <-  loans4[complete.cases(loans4), ]
+# OPTION 1: JUST USE NON-MISSING in age FOR THIS ANALYSIS
+
+withage<- loans4[!is.na(loans4$age),] # subset for non missing on age
+summary(withage)
+write.csv(subset,"HOPE_dataset_withage.csv" )
+
+# Ideally: inspect if the occurrence of missing values is related with some characteristics
+# In other words: can this subset be considered a random sample of the population ?
+#(obs: inspect for other columns?)
 
 # OPTION 2: CHECK HOW GOOD THE EXPLANATORY VARIABLES ARE IN PREDICTING, TO SEE IF IMPUTATION WOULD WORK
 # See how good is the subset for prediction
@@ -137,13 +145,6 @@ RescaleDataM <- t(t(DataImputeKNN)*PreImputeKNN$std+PreImputeKNN$mean)
 
 
 ######################################################## extra:
-#Age at disbursement (to explore):
-
-loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
-loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
-loans2$age_at_disbusement <- loans$date.new - loans$date.now
-loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
-
 
 #Age groups (done):
 hist(loans4$age)
@@ -152,5 +153,26 @@ levels(loans4$age_groups) <- list( twenties = 20:29, thirties = 30:39, forties =
 summary(factor(loans4$age_groups))
 loans4$age_groups <- ordered(loans4$age_groups)
 summary(loans4$age_groups)
+#Remember: NA's because age has NA's
 
+# Disbursement_amounts_categories: PROBLEM: SHOULDN'T HAVE NA'S
+#Inspecting again to see what would be reasonable:
+hist(loans4$DisbursedAmount, 200)
+boxplot(loans4$DisbursedAmount)
+summary(loans4$DisbursedAmount)
+sum(is.na(loans4$DisbursedAmount)) # There are no missing values on DisbursedAmount
+#Decision: use the quantiles
+# Creating:
+loans4$amount_levels <- factor(loans4$DisbursedAmount)
+levels(loans4$amount_levels) <- list( first_q = 0:200000, second_q = 200000:311060, third_q = 311060:350000, forth_q = 350000: 6000000)
+summary(factor(loans4$amount_levels))
+loans4$amount_levels <- ordered(loans4$amount_levels)
+summary(loans4$amount_levels)
+
+#Age at disbursement (to explore):
+
+loans2$date.new <- as.Date(as.character(loans$BirthDate), format="%m/%d/%Y")
+loans2$date.now <- as.Date(as.character(loans$DisbursementDate), format="%m/%d/%Y")
+loans2$age_at_disbusement <- loans$date.new - loans$date.now
+loans2$age <- as.numeric(loans2$DisbursementDate - loans2$BirthDate) %/% 365.25
 

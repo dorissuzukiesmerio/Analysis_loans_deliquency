@@ -21,6 +21,10 @@ boxplot(loans$WorkDaysLoanWasInArrears)
 hist(loans$DisbursedAmount, 500)
 hist(loans$LateInstallments, 17)
 hist(loans$WorkDaysLoanWasInArrears, 30)
+#Inspecting correlation between LateInstallments and WorkDaysLoanWasInASrrears
+plot(loans4$WorkDaysLoanWasInArrears, loans4$LateInstallments)
+days_late_model <- lm(loans4$LateInstallments ~ loans4$WorkDaysLoanWasInArrears )
+abline(days_late_model, col = "red")
 
 # For categorical/ character variables : use "factor". Now, summary will show  how many in each category
 summary(factor(loans$Gender))

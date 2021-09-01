@@ -1,44 +1,14 @@
 ################################### Tables:
 
-#Deliquency rates per marital status:
-Delinquency_per_MaritalStatus <- table(loans4$MaritalStatus, loans4$Delinquency)
-Delinquency_per_MaritalStatus
-
-#obs: rename column for typo (If I have time): Seperated to Separated
-
-install.packages("arsenal")
+#Deliquency rates per marital status, Gender, ProductGroup, age groups, Disbursement Date
+# install.packages("arsenal")
 library(arsenal) 
-table_one <- tableby(Delinquency ~ MaritalStatus + Gender + ProductGroup1Name , data = loans4) 
-summary(table_one, title = "Gapminder Data")
-# create categories age groups and disbursement amounts
-
-#Deliquency rates per Gender:
-table(loans$Gender, loans$Delinquency)
-table(loans$Gender)
-Female_percentage <- 39061 / (39061 + 26313)
-Female_percentage
-Male_percentage <- 26313 / (39061 + 26313)
-Male_percentage
-
-#Deliquency rates per Age:
-table(loans$, loans$Delinquency)
-
-#Deliquency rates per ProductGroupName:
-table(loans$ProductGroup1Name, loans$Delinquency)
-
-#Deliquency rates per DisbursementDate: #### treat as date ! Also: use year
-table(loans$DisbursementDate, loans$Delinquency)
-
-#Deliquency rates per DisbursedAmount: ### 
-table(loans$DisbursedAmount, loans$Delinquency)
-
-library(GGally)
-loans_subset <- loans[c("Gender","MaritalStatus","ProductGroup1Name","Delinquency")]
-ggpairs(data=loans_subset,aes(colour=Delinquency))
+table_one <- tableby(Delinquency ~ MaritalStatus + Gender + ProductGroup1Name + age_groups + as.character(DisbursementDate_YearMonth), data = loans4) 
+summary(table_one, title = "Deliquency by characteristics")
 
 ################################ REGRESSIONS: 
 
-#######Dummies : higher_delinquency and lower_delinquency######
+####### With y = Dummies for higher_delinquency and lower_delinquency######
 
 # Linear Probability Model : simple, not best approach
 lm1 <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
