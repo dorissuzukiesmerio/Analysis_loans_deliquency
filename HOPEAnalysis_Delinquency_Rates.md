@@ -150,92 +150,98 @@ Boxplots:
 
 Regression results:
 
-summary(margins(probit1, type="response", variables= "age"))
- factor     AME     SE       z      p   lower  upper
-    age -0.0006 0.0003 -1.9200 0.0549 -0.0012 0.0000
+ 
 
-summary(margins(probit1, type="response", variables= "Gender"))
-factor    AME     SE      z      p  lower  upper
- GenderMale 0.0120 0.0059 2.0254 0.0428 0.0004 0.0236
-summary(margins(probit1, type="response", variables= "MaritalStatus"))
-            factor     AME     SE       z      p   lower   upper
-MaritalStatusDivorced  0.0006 0.0214  0.0258 0.9794 -0.0414  0.0425
-MaritalStatusMarried -0.0230 0.0070 -3.2884 0.0010 -0.0368 -0.0093
- MaritalStatusSeperated  0.0327 0.0247  1.3251 0.1851 -0.0157  0.0812
-MaritalStatusSingle -0.0017 0.0064 -0.2716 0.7859 -0.0143  0.0108
-MaritalStatusWidowed -0.0134 0.0158 -0.8475 0.3967 -0.0444  0.0176
-summary(margins(probit1, type="response", variables= "DisbursedAmount"))
-     factor     AME     SE       z      p   lower   upper
- DisbursedAmount -0.0000 0.0000 -4.5978 0.0000 -0.0000 -0.0000
-summary(margins(probit1, type="response", variables= "ProductGroup1Name"))
-                          factor     AME     SE       z      p   lower
- ProductGroup1NameIndividual/Business  0.7756 2.0345  0.3812 0.7030 -3.2119
-          ProductGroup1NameStaff -0.1366 0.0875 -1.5610 0.1185 -0.3081
-         ProductGroup1NameTelema  0.0678 0.0216  3.1427 0.0017  0.0255
-upper
- 4.7631
- 0.0349
- 0.1100
-summary(margins(probit1, type="response", variables= "DisbursementDate_YearMonth"))
-                      factor     AME       SE       z      p      lower
- DisbursementDate_YearMonth201902 -0.0130   0.0239 -0.5445 0.5861    -0.0599
- DisbursementDate_YearMonth201903 -0.0511   0.0217 -2.3550 0.0185    -0.0937
- DisbursementDate_YearMonth201904 -0.0633   0.0224 -2.8295 0.0047    -0.1072
- DisbursementDate_YearMonth201905 -0.1068   0.0193 -5.5473 0.0000    -0.1446
- DisbursementDate_YearMonth201906 -0.1117   0.0185 -6.0376 0.0000    -0.1480
- DisbursementDate_YearMonth201907 -0.0586   0.0217 -2.7035 0.0069    -0.1011
- DisbursementDate_YearMonth201908 -0.0921   0.0215 -4.2861 0.0000    -0.1343
- DisbursementDate_YearMonth201909 -0.0861   0.0206 -4.1832 0.0000    -0.1264
- DisbursementDate_YearMonth201910 -0.0611   0.0224 -2.7272 0.0064    -0.1051
- DisbursementDate_YearMonth201911  0.0853   0.0242  3.5272 0.0004     0.0379
- DisbursementDate_YearMonth201912  0.3722   0.0242 15.3966 0.0000     0.3248
- DisbursementDate_YearMonth202001  0.5182   0.0309 16.7962 0.0000     0.4577
- DisbursementDate_YearMonth202002  0.5770   0.0344 16.7536 0.0000     0.5095
- DisbursementDate_YearMonth202003  0.6093   0.0412 14.7861 0.0000     0.5285
- DisbursementDate_YearMonth202005  0.5841 827.4876  0.0007 0.9994 -1621.2617
- DisbursementDate_YearMonth202006 -0.1394   0.0182 -7.6465 0.0000    -0.1751
- DisbursementDate_YearMonth202007 -0.1229   0.0192 -6.4165 0.0000    -0.1604
- DisbursementDate_YearMonth202008 -0.0171   0.0249 -0.6858 0.4929    -0.0659
- DisbursementDate_YearMonth202009 -0.1218   0.0243 -5.0041 0.0000    -0.1695
- DisbursementDate_YearMonth202010 -0.0843   0.0271 -3.1057 0.0019    -0.1375
- DisbursementDate_YearMonth202011 -0.0999   0.0230 -4.3492 0.0000    -0.1449
- DisbursementDate_YearMonth202012 -0.0926   0.0196 -4.7226 0.0000    -0.1310
- DisbursementDate_YearMonth202101 -0.1259   0.0225 -5.5945 0.0000    -0.1700
- DisbursementDate_YearMonth202102 -0.1523   0.0173 -8.8040 0.0000    -0.1862
- DisbursementDate_YearMonth202103 -0.1521   0.0270 -5.6384 0.0000    -0.2050
- DisbursementDate_YearMonth202104 -0.1521   0.0273 -5.5730 0.0000    -0.2056
- DisbursementDate_YearMonth202105 -0.1521   0.0279 -5.4592 0.0000    -0.2067
- DisbursementDate_YearMonth202106 -0.1523   0.0173 -8.8040 0.0000    -0.1862
- DisbursementDate_YearMonth202107 -0.1523   0.0173 -8.8040 0.0000    -0.1862
- DisbursementDate_YearMonth202108 -0.1521   0.0420 -3.6217 0.0003    -0.2344
-upper
-0.0339
--0.0086
--0.0195
--0.0691
--0.0755
--0.0161
--0.0500
--0.0458
--0.0172
-0.1327
-0.4196
-0.5786
-0.6445
-0.6900
- 1622.4299
--0.1036
--0.0853
-0.0317
--0.0741
--0.0311
--0.0549
--0.0542
--0.0818
--0.1184
--0.0992
--0.0986
--0.0975
--0.1184
--0.1184
--0.0698
+===========================================================================================================================================================
+
+​                                             Dependent variable:                       
+
+​                       \--------------------------------------------------------------------------------------------------------------
+
+​                       higher_delinquency lower_delinquency higher_delinquency lower_delinquency higher_delinquency lower_delinquency
+
+​                          OLS        OLS       probit      probit      logistic     logistic  
+
+​                          (1)        (2)        (3)        (4)        (5)        (6)    
+
+\-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+age                        -0.001*      0.001**      -0.004*      0.004**      -0.006*      0.006**   
+
+​                         (0.0003)     (0.0004)      (0.002)      (0.002)      (0.004)      (0.003)   
+
+​                                                                              
+
+factor(Gender)Male                0.013**       0.005      0.078**       0.021      0.157**       0.040   
+
+​                         (0.006)      (0.008)      (0.038)      (0.031)      (0.070)      (0.054)   
+
+​                                                                             
+
+factor(MaritalStatus)Divorced           0.001       -0.015       0.004       -0.059       -0.012      -0.099   
+
+​                         (0.022)      (0.029)      (0.136)      (0.113)      (0.251)      (0.192)   
+
+​                                                                             
+
+factor(MaritalStatus)Married           -0.023***     0.038***     -0.156***     0.170***     -0.278***     0.283***   
+
+​                         (0.007)      (0.009)      (0.048)      (0.039)      (0.090)      (0.068)   
+
+​                                                                             
+
+factor(MaritalStatus)Seperated           0.029       -0.033       0.193       -0.124       0.323       -0.218   
+
+​                         (0.023)      (0.029)      (0.137)      (0.117)      (0.252)      (0.199)   
+
+​                                                                              
+
+factor(MaritalStatus)Single            -0.002       0.003       -0.011       0.016       -0.028       0.026   
+
+​                         (0.006)      (0.008)      (0.041)      (0.034)      (0.076)      (0.058)   
+
+​                                                                              
+
+factor(MaritalStatus)Widowed            -0.015      -0.003       -0.088      -0.011       -0.170      -0.017   
+
+​                         (0.017)      (0.022)      (0.107)      (0.087)      (0.197)      (0.149)   
+
+​                                                                              
+
+DisbursedAmount                 -0.00000***     0.00000*     -0.00000***     0.00000**    -0.00000***     0.00000**  
+
+​                         (0.000)      (0.000)     (0.00000)     (0.00000)     (0.00000)     (0.00000)  
+
+​                                                                              
+
+factor(ProductGroup1Name)Individual/Business   0.360**      -0.279       6.992       -1.763*      17.336      -3.071**   
+
+​                         (0.148)      (0.192)      (62.492)      (0.921)     (305.854)      (1.524)   
+
+​                                                                             
+
+factor(ProductGroup1Name)Staff                                                               
+
+​                                                                              
+
+​                                                                             
+
+\-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Observations                    11,726      11,726       11,726      11,726       11,726      11,726   
+
+R2                         0.301       0.295                                        
+
+Adjusted R2                    0.299       0.292                                         
+
+Log Likelihood                                    -3,267.948    -5,078.413     -3,267.079    -5,081.520  
+
+Akaike Inf. Crit.                                   6,619.895     10,240.830     6,618.157     10,247.040  
+
+Residual Std. Error (df = 11684)          0.290       0.377                                        
+
+F Statistic (df = 41; 11684)           123.005***    119.220***                                       
+
+===========================================================================================================================================================
+
+Note:                                                              *p<0.1; **p<0.05; ***p<0.01

@@ -14,43 +14,12 @@ summary(table_one, title = "Deliquency by characteristics")
 
 ################################ REGRESSIONS: 
 
-####### With y = Dummies for higher_delinquency and lower_delinquency######
+#### With y = Dummies for higher_delinquency and lower_delinquency######
 
-# Linear Probability Model : simple, not best approach
-lm1 <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
-summary(lm1)
-
-lm2 <- lm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
-summary(lm2)
-
-# Probit :
-probit1 <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
-               family=binomial (link=probit), data = loans4)
-summary(probit1)
-
-probit2 <- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
-               family=binomial (link=probit), data = loans4)
-summary(probit2)
-
-# Logit:
-
-logit1 <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
-               family=binomial (link=logit), data = loans4)
-summary(logit1)
-
-logit2 <- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
-               family=binomial (link=logit), data = loans4)
-summary(logit2)
-
-#Comparison table:
-stargazer(list(lm1,lm2,probit1, probit2,logit1, logit2), type = "text", 
-          keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
-          digits=3, keep=c(1:10))
-
-############ Using withage data (without missing values for age)
+####Using withage data (without missing values for age)
 
 
-# Linear Probability Model : simple, not best approach
+# Linear Probability Model########################
 lm1.withage <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
  data = withage)
 summary(lm1)
@@ -59,46 +28,66 @@ lm2.withage <- lm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatu
  data = withage)
 summary(lm2)
 
-############## PROBIT:
+#PROBIT###################################
 probit1.withage <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
                family=binomial (link=probit), data = withage)
-summary(probit1)
-summary(margins(probit1, type="response", variables= "age"))
-summary(margins(probit1, type="response", variables= "Gender"))
-summary(margins(probit1, type="response", variables= "MaritalStatus"))
-summary(margins(probit1, type="response", variables= "DisbursedAmount"))
-summary(margins(probit1, type="response", variables= "ProductGroup1Name"))
-summary(margins(probit1, type="response", variables= "DisbursementDate_YearMonth"))
+summary(probit1.withage)
+summary(margins(probit1.withage, type="response", variables= "age"))
+summary(margins(probit1.withage, type="response", variables= "Gender"))
+summary(margins(probit1.withage, type="response", variables= "MaritalStatus"))
+summary(margins(probit1.withage, type="response", variables= "DisbursedAmount"))
+summary(margins(probit1.withage, type="response", variables= "ProductGroup1Name"))
+summary(margins(probit1.withage, type="response", variables= "DisbursementDate_YearMonth"))
 
 
 
 probit2.withage <- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
                family=binomial (link=probit), data = withage)
-summary(probit2)
+summary(probit2.withage)
 
-summary(probit1)
-summary(margins(probit1, type="response", variables= "age"))
-summary(margins(probit1, type="response", variables= "Gender"))
-summary(margins(probit1, type="response", variables= "MaritalStatus"))
-summary(margins(probit1, type="response", variables= "DisbursedAmount"))
-summary(margins(probit1, type="response", variables= "ProductGroup1Name"))
-summary(margins(probit1, type="response", variables= "DisbursementDate_YearMonth"))
+summary(probit2.withage)
+summary(margins(probit2.withage, type="response", variables= "age"))
+summary(margins(probit2.withage, type="response", variables= "Gender"))
+summary(margins(probit2.withage, type="response", variables= "MaritalStatus"))
+summary(margins(probit2.withage, type="response", variables= "DisbursedAmount"))
+summary(margins(probit2.withage, type="response", variables= "ProductGroup1Name"))
+summary(margins(probit2.withage, type="response", variables= "DisbursementDate_YearMonth"))
 
 
-################ LOGIT:
+## LOGIT#########################:
 
 logit1.withage <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
                family=binomial (link=logit), data = withage)
-summary(logit1)
+summary(logit1.withage)
+# Logit model odds ratios
+exp(logit1.withage$coefficients)
+# Logit model average marginal effects
+LogitScalar <- mean(dlogis(predict(logit1.withage, type = "link")))
+LogitScalar * coef(logit1.withage)
+# Logit model predicted probabilities
+plogit<- predict(logit1.withage, type="response")
+summary(plogit1.withage) 
 
-logit2.withage <- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
+logit2.withage<- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
                family=binomial (link=logit), data = withage)
-summary(logit2)
+summary(logit2.withage)
+# Logit model odds ratios
+exp(logit2.withage$coefficients)
+# Logit model average marginal effects
+LogitScalar <- mean(dlogis(predict(logit2.withage, type = "link")))
+LogitScalar * coef(logit2.withage)
+# Logit model predicted probabilities
+plogit<- predict(logit2.withage, type="response")
+summary(plogit2.withage) 
 
 #Comparison table:
-stargazer(list(lm1,lm2,probit1, probit2, logit1, logit2), type = "text", 
+write.table(stargazer(list(lm1.withage,lm2.withage,probit1.withage, probit2.withage, logit1.withage, logit2.withage), type = "text", 
           keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
-          digits=3, keep=c(1:10))
+          digits=3, keep=c(1:10)))
+
+
+
+#################################################### EXTRA :
 
 ###### With y in Levels : Delinquency
 
@@ -127,24 +116,6 @@ summary(ologit1)
 
 # https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
 
-mspread = mean(spread)
-margins(ologit1, at =list(spread=mspread))
-
-#Let's try over a range from 1 to 10
-margins(ologit1, at =list(spread=1:10))
-
-## store table
-(ctable <- coef(summary(ologit1)))
-
-## calculate and store p values
-p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
-
-## combined table
-(ctable <- cbind(ctable, "p value" = p))
-
-#Confidence Intervals for the estimates :
-(ci <- confint(ologit1)) # default method gives profiled CIs
-confint.default(ologit1) # CIs assuming normality
 
 ###################With LateInstallements
 
@@ -224,6 +195,66 @@ stargazer(list(lm1,lm2,probit1, probit2,), type = "text",
 # |                  202106                     |  2884 (6.1%)  |    1 (0.0%)     |   0 (0.0%)    |   2885 (4.4%)   |        |
 # |                  202107                     |  1593 (3.3%)  |    0 (0.0%)     |   0 (0.0%)    |   1593 (2.4%)   |        |
 # |                  202108                     |  649 (1.4%)   |    0 (0.0%)     |   0 (0.0%)    |   649 (1.0%)    |        |
+
+# The results for loans4 were similar, so I just used the withage. Here is the code for loans4 though:
+#####Using loans4 dataset
+
+# Linear Probability Model####################
+lm1 <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
+summary(lm1)
+# Regression marginal effects
+coef(lm1) 
+
+
+lm2 <- lm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
+summary(lm2)
+# Regression marginal effects
+coef(lm2) 
+
+# Probit######################
+probit1 <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
+               family=binomial (link=probit), data = loans4)
+summary(probit1)
+
+probit2 <- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
+               family=binomial (link=probit), data = loans4)
+summary(probit2)
+
+# Logit:#######################
+
+logit1 <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
+              family=binomial (link=logit), data = loans4)
+summary(logit1)
+# Logit model odds ratios
+exp(logit1$coefficients)
+# Logit model average marginal effects
+LogitScalar <- mean(dlogis(predict(logit1, type = "link")))
+logit1_AME <- LogitScalar * coef(logit1)
+# Logit model predicted probabilities
+plogit<- predict(logit1, type="response")
+summary(plogit1) 
+
+
+logit2 <- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
+              family=binomial (link=logit), data = loans4)
+summary(logit2)
+# Logit model odds ratios
+exp(logit2$coefficients)
+# Logit model average marginal effects
+LogitScalar <- mean(dlogis(predict(logit2, type = "link")))
+LogitScalar * coef(logit2)
+# Logit model predicted probabilities
+plogit<- predict(logit2, type="response")
+summary(plogit2) 
+
+#Comparison table:
+stargazer(list(lm1,lm2,probit1, probit2,logit1, logit2), type = "text", 
+          keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
+          digits=3, keep=c(1:10))
+
+
+# Summary of marginal effects:
+
 
 
 
