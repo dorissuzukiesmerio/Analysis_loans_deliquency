@@ -43,7 +43,7 @@ plot(factor(loans$ProductGroup1Name), loans$LateInstallments, main = "Distributi
 summary(factor(loans$BirthDate))
 summary(factor(loans$DisbursementDate))
 #Boxplots with distribution of late installements per month:
-plot(factor(loans4$DisbursementDate_YearMonth), loans4$LateInstallments, main = "Distribution of Late Installements per Month", xlab = "Disbursement Date (YearMonth)", ylab = "Number of Late Installements", col="yellow")
+plot(factor(loans4$DisbursementDate_YearMonth), loans4$LateInstallments, main = "Distribution of Late Installments per Month", xlab = "Disbursement Date (YearMonth)", ylab = "Number of Late Installments", col="yellow")
 
 #just checking, but not too relevant to know its statistics:
 summary(loans$CustomerId) # from 100112 to 165421
