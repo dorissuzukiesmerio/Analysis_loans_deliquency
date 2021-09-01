@@ -50,17 +50,13 @@ Interpretation : one unit change in x is correlated with beta% (or margin%) chan
 
 > Regression results
 
-- Age: seems to be negatively correlated with delinquency rate (might indicate that people who are older tend to have lower delinquency rates)
+	Confirm date correlation, and further reveal:
+•	Age: seems to be negatively correlated with higher delinquency rate (might indicate that people who are older are -0.1 less likely to have high delinquency rates, according to LPM, or -0.06 by probit)
+•	Married: lower delinquency rate than DeFacto (probit: On average, being married decreases the probability of higher delinquency by -2.30 percentage points in comparison with DeFacto.) ; no significant effect for Divorced, Separated, Single,
+•	Individual/Business and Telema seems to be correlated with higher delinquency (ex: Individual/Business are 77.56% more likely to incur in higher delinquency by logit/ 36% by LPM; probit model estimates that Telema clients are on average 6.78% more likely to incur in higher delinquency  than Group). 
+•	Disbursed Amount: seems to indicate relationship, though changing magnitude would be helpful
+•	Male: seems to be positively correlated with higher delinquency rate, though the effect is questionable and small (ex: 1.2 % for probit). Estimates for lower delinquency are also positive, though not statistically significant.
 
-Probit: On average, a one-unit increase in age decreases the probability of higher delinquency by 0.06 percentage points.
-
-- Male: seems to be positively correlated with delinquency rate (might indicate that ) - though very weak magnitude
-
-- Married:  lower delinquency rate than DeFacto; no significant effect for Divorced, Separated, Single, 
-
-obs: interpretation in relation to the DeFacto, that was taken as a benchmark	
-
-- Disbursed Amount: seems to indicate relationship, though changing magnitude would be helpful
 
 #### Further recommendations:
 
