@@ -10,9 +10,9 @@ Analyze the dataset for trends correlating to higher client delinquency, as well
 
 Descriptive statistics tables, boxplots and histograms reveal that :
 
-- Distribution of Late Installments has clustering of values on zero : need to account for that in the model if "LateInstallements" is used as dependent variable
 - Tables of variables and Delinquency seem to indicate relevant correlation with Date
 -  82% of BirthDate are missing : which means that we either drop them (if missing values occurrence is random such as subset will meet the condition of being a random sample of the population), or impute values (check how good the explanatory variables are in predicting : train and testing). Testing the regressions with and without the missing data, and realizing the results didn't change too much, I chose to use the subset, which I called " withage"
+- Distribution of Late Installments has clustering of values on zero : would need to account for that in the model if "LateInstallements" was used as dependent variable
 
 ##### Variables created :
 
@@ -27,13 +27,19 @@ Descriptive statistics tables, boxplots and histograms reveal that :
 >
 >  y =  dummy for high delinquency ; y = dummy for low delinquency
 
-1) Linear Probability Model (Despite limitations, it is a helpful model to include)
+1) Linear Probability Model
 
 2) Logit
 
 3) Probit
 
-Interpretation : one unit change in x is correlated with beta% (or margin%) change in probability of higher/lower delinquency; *** indicate statistical significance
+>  Interpretation : 
+
+for continous x : one unit change in x is correlated to a change of beta% (or margin%) in the probability of higher/lower delinquency;
+
+for categorical x : belonging to that category is correlated with a x change with beta% (or margin%) of change in probability of higher/lower delinquency;
+
+ *** indicate statistical significance
 
 #### Results:  
 
@@ -46,19 +52,22 @@ Interpretation : one unit change in x is correlated with beta% (or margin%) chan
 
 > Regression results
 
-Age: seems to be negatively correlated with delinquency rate (might indicate that people who are older tend to have lower delinquency rates)
+- Age: seems to be negatively correlated with delinquency rate (might indicate that people who are older tend to have lower delinquency rates)
 
-Male: seems to be positively correlated with delinquency rate (might indicate that ) - though very weak magnitude
+Probit: On average, a one-unit increase in age decreases the probability of higher delinquency by 0.06 percentage points.
 
-Married:  lower delinquency rate than DeFacto; no significant effect for Divorced, Separated, Single, 
+- Male: seems to be positively correlated with delinquency rate (might indicate that ) - though very weak magnitude
+
+- Married:  lower delinquency rate than DeFacto; no significant effect for Divorced, Separated, Single, 
 
 obs: interpretation in relation to the DeFacto, that was taken as a benchmark	
 
-Disbursed Amount: seems to indicate relationship, though changing magnitude would be helpful
+- Disbursed Amount: seems to indicate relationship, though changing unit would be helpful
 
 #### Further recommendations:
 
 - Include other variables that the literature has given evidence to be relevant in analyzing loan delinquency : location, occupation, purpose of the loan
+- Try a "Two-part model"
 
 - Ologit (ordinal logistic regression) : appropriate when the dependent variable is categorical and ordered (Desired method , however, had technical problems with "zelig" and "polr" packages)
   -  "Delinquency rate" is the variable we are trying to explain (called the dependant variable) -> It is a categorical variable (low, medium, high), not a continuous one.
@@ -71,7 +80,7 @@ Other ideas :
 
 Questions:
 
-- What is the unit of the DisbursedAmount ? 
+- What is the unit (currency) of the DisbursedAmount ? 
 
 
 
@@ -150,98 +159,4 @@ Boxplots:
 
 Regression results:
 
- 
-
-===========================================================================================================================================================
-
-​                                             Dependent variable:                       
-
-​                       \--------------------------------------------------------------------------------------------------------------
-
-​                       higher_delinquency lower_delinquency higher_delinquency lower_delinquency higher_delinquency lower_delinquency
-
-​                          OLS        OLS       probit      probit      logistic     logistic  
-
-​                          (1)        (2)        (3)        (4)        (5)        (6)    
-
-\-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-age                        -0.001*      0.001**      -0.004*      0.004**      -0.006*      0.006**   
-
-​                         (0.0003)     (0.0004)      (0.002)      (0.002)      (0.004)      (0.003)   
-
-​                                                                              
-
-factor(Gender)Male                0.013**       0.005      0.078**       0.021      0.157**       0.040   
-
-​                         (0.006)      (0.008)      (0.038)      (0.031)      (0.070)      (0.054)   
-
-​                                                                             
-
-factor(MaritalStatus)Divorced           0.001       -0.015       0.004       -0.059       -0.012      -0.099   
-
-​                         (0.022)      (0.029)      (0.136)      (0.113)      (0.251)      (0.192)   
-
-​                                                                             
-
-factor(MaritalStatus)Married           -0.023***     0.038***     -0.156***     0.170***     -0.278***     0.283***   
-
-​                         (0.007)      (0.009)      (0.048)      (0.039)      (0.090)      (0.068)   
-
-​                                                                             
-
-factor(MaritalStatus)Seperated           0.029       -0.033       0.193       -0.124       0.323       -0.218   
-
-​                         (0.023)      (0.029)      (0.137)      (0.117)      (0.252)      (0.199)   
-
-​                                                                              
-
-factor(MaritalStatus)Single            -0.002       0.003       -0.011       0.016       -0.028       0.026   
-
-​                         (0.006)      (0.008)      (0.041)      (0.034)      (0.076)      (0.058)   
-
-​                                                                              
-
-factor(MaritalStatus)Widowed            -0.015      -0.003       -0.088      -0.011       -0.170      -0.017   
-
-​                         (0.017)      (0.022)      (0.107)      (0.087)      (0.197)      (0.149)   
-
-​                                                                              
-
-DisbursedAmount                 -0.00000***     0.00000*     -0.00000***     0.00000**    -0.00000***     0.00000**  
-
-​                         (0.000)      (0.000)     (0.00000)     (0.00000)     (0.00000)     (0.00000)  
-
-​                                                                              
-
-factor(ProductGroup1Name)Individual/Business   0.360**      -0.279       6.992       -1.763*      17.336      -3.071**   
-
-​                         (0.148)      (0.192)      (62.492)      (0.921)     (305.854)      (1.524)   
-
-​                                                                             
-
-factor(ProductGroup1Name)Staff                                                               
-
-​                                                                              
-
-​                                                                             
-
-\-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Observations                    11,726      11,726       11,726      11,726       11,726      11,726   
-
-R2                         0.301       0.295                                        
-
-Adjusted R2                    0.299       0.292                                         
-
-Log Likelihood                                    -3,267.948    -5,078.413     -3,267.079    -5,081.520  
-
-Akaike Inf. Crit.                                   6,619.895     10,240.830     6,618.157     10,247.040  
-
-Residual Std. Error (df = 11684)          0.290       0.377                                        
-
-F Statistic (df = 41; 11684)           123.005***    119.220***                                       
-
-===========================================================================================================================================================
-
-Note:                                                              *p<0.1; **p<0.05; ***p<0.01
+(see regression_outputs file)
