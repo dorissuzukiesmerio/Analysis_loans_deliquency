@@ -12,9 +12,9 @@ Analyze the dataset for trends correlating to higher client delinquency, as well
 
 Descriptive statistics tables, boxplots and histograms reveal that :
 
-- Distribution of Late Installments has clustering of values on zero : need to account for that in the model if "LateInstallements" is used as dependent variable
 - Tables of variables and Delinquency seem to indicate relevant correlation with Date
 -  82% of BirthDate are missing : which means that we either drop them (if missing values occurrence is random such as subset will meet the condition of being a random sample of the population), or impute values (check how good the explanatory variables are in predicting : train and testing). Testing the regressions with and without the missing data, and realizing the results didn't change too much, I chose to use the subset, which I called " withage"
+- Distribution of Late Installments has clustering of values on zero : need to account for that in the model if "LateInstallements" is used as dependent variable
 
 ##### Variables created :
 
