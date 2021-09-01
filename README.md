@@ -44,7 +44,7 @@ Interpretation : one unit change in x is correlated with beta% (or margin%) chan
 - loans disbursed just before the outburst of the pandemic ( from December 2019 to March 2020 ) had the highest delinquency rates (possible explanation: expectations of ability to pay were trampled by lockdowns)
 - from approximately September 2020 to present : lowest delinquency rates (possible explanation: besides being most recent, so less time to have late installment, those who took the loans were possibly a subgroup that had higher capability to not incur in delinquency )
 
-(See boxplot for lateinstallements per date)
+(See Distr_LateI_perMonth.png)
 
 <img src="C:\Users\doris\AppData\Roaming\Typora\typora-user-images\image-20210901012054623.png" alt="image-20210901012054623" style="zoom:33%;" />
 
