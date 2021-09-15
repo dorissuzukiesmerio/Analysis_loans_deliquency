@@ -2,11 +2,11 @@
 
 # Step 0 : making sure that packages are installed, and environment clean
 #packages to install in R to be able to run this code:
-install.packages("ggplot")
-install.packages("caret")
-install.packages("glm")
-install.packages("readr")
-install.packages("tidyr")
+#install.packages("ggplot")
+#install.packages("caret")
+#install.packages("glm")
+#install.packages("readr")
+#install.packages("tidyr")
 #obs: I like to load the package further on, as I need to use it: library(), or require()
 
 rm(list = ls()) #clear the work environment
@@ -75,13 +75,30 @@ loans4$monthyear_Disbursement.num <- NULL
 
 # LOANS PER CUSTOMER:
 library(dplyr)
-loans4$loans_per_customer<- tally(group_by(loans4, CustomerId))
-loans4$loans_per_customer <- as.numeric(loans4$loans_per_customer)
+loans_per_customer<- tally(group_by(loans4, CustomerId))#count and put in a new dataset
+loans_per_customer
+# m to one merge :
+loans4 <- merge(loans4, loans_per_customer, by = "CustomerId")
 hist(loans4$loans_per_customer)
-# further: put in dataset
+
+#Age groups (done):
+hist(loans4$age)
+loans4$age_groups <- factor(loans4$age)
+levels(loans4$age_groups) <- list( twenties = 20:29, thirties = 30:39, forties = 40:49, fifties = 50:59, sixties = 60:69)
+summary(factor(loans4$age_groups))
+loans4$age_groups <- ordered(loans4$age_groups)
+summary(loans4$age_groups)
+#Remember: NA's because age has NA's
+
+#Adjust DISBURSED AMOUNT FOR LESS ZEROS:
+summary(loans4$DisbursedAmount) # min is 55 000 and max 6 000 000. Take 000
+loans4$AmountAdjusted <-loans4$DisbursedAmount/1000
+summary(loans4$AmountAdjusted)
+#DISBUSED AMOUNT IN DOLLARS:
 
 
-write.csv(loans4,"HOPE_dataset_loans4_updated.csv" )
+
+write.csv(loans4,"HOPE_dataset_loans4_updated2.csv" )
 
 
 # Make date variable : day, month, year #inspect how it plots
@@ -100,7 +117,7 @@ summary(factor(loans$BirthDate)) # 82% IS NA
 
 withage<- loans4[!is.na(loans4$age),] # subset for non missing on age
 summary(withage)
-write.csv(subset,"HOPE_dataset_withage.csv" )
+write.csv(withage,"HOPE_dataset_withage2.csv" )
 
 # Ideally: inspect if the occurrence of missing values is related with some characteristics
 # In other words: can this subset be considered a random sample of the population ?
@@ -147,14 +164,7 @@ RescaleDataM <- t(t(DataImputeKNN)*PreImputeKNN$std+PreImputeKNN$mean)
 
 ######################################################## extra:
 
-#Age groups (done):
-hist(loans4$age)
-loans4$age_groups <- factor(loans4$age)
-levels(loans4$age_groups) <- list( twenties = 20:29, thirties = 30:39, forties = 40:49, fifties = 50:59, sixties = 60:69)
-summary(factor(loans4$age_groups))
-loans4$age_groups <- ordered(loans4$age_groups)
-summary(loans4$age_groups)
-#Remember: NA's because age has NA's
+
 
 # Disbursement_amounts_categories: PROBLEM: SHOULDN'T HAVE NA'S
 #Inspecting again to see what would be reasonable:

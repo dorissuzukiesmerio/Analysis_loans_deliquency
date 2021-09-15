@@ -22,11 +22,11 @@ summary(table_one, title = "Deliquency by characteristics")
 # Linear Probability Model########################
 lm1.withage <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
  data = withage)
-summary(lm1)
+summary(lm1.withage)
 
 lm2.withage <- lm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
  data = withage)
-summary(lm2)
+summary(lm2.withage)
 
 #PROBIT###################################
 probit1.withage <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
@@ -59,80 +59,23 @@ summary(margins(probit2.withage, type="response", variables= "DisbursementDate_Y
 logit1.withage <- glm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth),
                family=binomial (link=logit), data = withage)
 summary(logit1.withage)
-# Logit model odds ratios
-exp(logit1.withage$coefficients)
-# Logit model average marginal effects
-LogitScalar <- mean(dlogis(predict(logit1.withage, type = "link")))
-LogitScalar * coef(logit1.withage)
-# Logit model predicted probabilities
-plogit<- predict(logit1.withage, type="response")
-summary(plogit1.withage) 
+logitmfx(logit1.withage, withage)
+
 
 logit2.withage<- glm(lower_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), 
                family=binomial (link=logit), data = withage)
 summary(logit2.withage)
-# Logit model odds ratios
-exp(logit2.withage$coefficients)
-# Logit model average marginal effects
-LogitScalar <- mean(dlogis(predict(logit2.withage, type = "link")))
-LogitScalar * coef(logit2.withage)
-# Logit model predicted probabilities
-plogit<- predict(logit2.withage, type="response")
-summary(plogit2.withage) 
+
+logitmfx(logit2.withage, withage)
+
 
 #Comparison table:
-write.table(stargazer(list(lm1.withage,lm2.withage,probit1.withage, probit2.withage, logit1.withage, logit2.withage), type = "text", 
-          keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
-          digits=3, keep=c(1:10)))
-
-
-
-#################################################### EXTRA :
-
-###### With y in Levels : Delinquency
-
-# ologit: for categorical variable (Deliquency rates: none, low, medium, high)
-
-#Ordering the dependent variable
-loans4$Delinquency.ordered = factor(loans4$Delinquency, levels = c("low", "medium", "high"), ordered = TRUE) 
-Deliquency_frequency <- table(loans4$Deliquency.ordered)
-#Using Zelig:
-install.packages("remotes")
-library(remotes)
-install_github("cran/zelig")
-library(Zelig)
-ologit1.z <- zelig( Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) , 
-                    model = "ologit", data = subset)
-
-summary(ologit1.z)
-
-install_github("cran/MASS")
-#install.packages("zeligverse")
-#library(zeligverse)
-
-## fit ordered logit model and store results 'ologit1'
-ologit1 <- polr( Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + DisbursementDate_YearMonth , data = subset, Hess=TRUE)
-summary(ologit1)
-
-# https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
-
-
-###################With LateInstallements
-
-
-# tobit : for late installments
-# adequate because of truncated data (lots of zeros), 
-# it is called " censored regression"
-# interpretation - signal, but for magnitude, calculate the marginal effect
-#https://stats.idre.ucla.edu/r/dae/tobit-models/
-require(ggplot2)
-require(GGally)
-require(VGAM)
-
-
-stargazer(list(lm1,lm2,probit1, probit2,), type = "text", 
-          keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
-          digits=3, keep=c(1:10))
+setwd('/Users/doris/OneDrive/Documentos/Fall_2021_last_semester')
+stargazer(list(lm1.withage,lm2.withage,probit1.withage, probit2.withage, logit1.withage, logit2.withage),
+          type = "text", 
+          float = FALSE, font.size = "small", 
+          digits=3, keep=c(1:100),
+          out="stargazer_lmprlg.doc")
 
 
 # Table: Deliquency by characteristics
@@ -200,7 +143,7 @@ stargazer(list(lm1,lm2,probit1, probit2,), type = "text",
 #####Using loans4 dataset
 
 # Linear Probability Model####################
-lm1 <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + DisbursedAmount + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
+lm1 <- lm(higher_delinquency ~ age + factor(Gender) + factor(MaritalStatus) + AmountAdjusted + factor(ProductGroup1Name) + factor(DisbursementDate_YearMonth), data = loans4)
 summary(lm1)
 # Regression marginal effects
 coef(lm1) 
@@ -252,10 +195,55 @@ stargazer(list(lm1,lm2,probit1, probit2,logit1, logit2), type = "text",
           keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
           digits=3, keep=c(1:10))
 
+############
+?stargazer
 
-# Summary of marginal effects:
+#################################################### EXTRA :
+
+###### With y in Levels : Delinquency
+
+# ologit: for categorical variable (Deliquency rates: none, low, medium, high)
+
+#Ordering the dependent variable
+loans4$Delinquency.ordered = factor(loans4$Delinquency, levels = c("low", "medium", "high"), ordered = TRUE) 
+Deliquency_frequency <- table(loans4$Deliquency.ordered)
+#Using Zelig:
+install.packages("remotes")
+library(remotes)
+install_github("cran/zelig")
+library(Zelig)
+ologit1.z <- zelig( Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) , 
+                    model = "ologit", data = subset)
+
+summary(ologit1.z)
+
+install_github("cran/MASS")
+#install.packages("zeligverse")
+#library(zeligverse)
+
+## fit ordered logit model and store results 'ologit1'
+ologit1 <- polr( Delinquency ~ age + factor(Gender) + factor(MaritalStatus) + factor(ProductGroup1Name) + DisbursementDate_YearMonth , data = subset, Hess=TRUE)
+summary(ologit1)
+
+# https://stats.idre.ucla.edu/r/dae/ordinal-logistic-regression/
 
 
+###################With LateInstallements
+
+
+# tobit : for late installments
+# adequate because of truncated data (lots of zeros), 
+# it is called " censored regression"
+# interpretation - signal, but for magnitude, calculate the marginal effect
+#https://stats.idre.ucla.edu/r/dae/tobit-models/
+require(ggplot2)
+require(GGally)
+require(VGAM)
+
+
+stargazer(list(lm1,lm2,probit1, probit2,), type = "text", 
+          keep.stat = c("n","rsq"), float = FALSE, font.size = "small", 
+          digits=3, keep=c(1:10))
 
 
 

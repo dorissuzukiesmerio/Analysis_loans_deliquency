@@ -56,7 +56,7 @@ for categorical x : belonging to that category is correlated with a x change wit
 
 Probit: On average, a one-unit increase in age decreases the probability of higher delinquency by 0.06 percentage points.
 
-- Male: seems to be positively correlated with delinquency rate (might indicate that ) - though very weak magnitude
+- Male: seems to be positively correlated with delinquency rate (might indicate that ) 
 
 - Married:  lower delinquency rate than DeFacto; no significant effect for Divorced, Separated, Single, 
 
