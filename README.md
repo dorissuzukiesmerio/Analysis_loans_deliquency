@@ -1,6 +1,6 @@
-# Analysis_HOPE_loans_deliquency
+# Analysis_loans_deliquency
 
-### HOPE Analysis for Delinquency Rates 
+### Analysis for Delinquency Rates 
 
 #### Objective:
 
