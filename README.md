@@ -77,7 +77,7 @@ Other ideas :
 
 Questions:
 
-- What is the unit of the DisbursedAmount ? 
+- What is the unit of the DisbursedAmount ? Congolese franc
 
 
 
